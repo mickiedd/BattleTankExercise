@@ -14,13 +14,17 @@ ATank* ATankAIController::GetControlledTank() const
 
 void ATankAIController::BeginPlay()
 {
+	Super::BeginPlay();
 	auto tank = GetControlledTank();
 	if (tank == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("This AI do not own a Tank."));
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("This is a tank AI Controller.And the tank is: %s"), *tank->GetName());
+		if (this->IsActorTickEnabled())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("This is a tank AI Controller.And the tank is: %s"), *tank->GetName());
+		}
 	}
 	auto playerController = GetPlayerTankController();
 	if (playerController == nullptr)
@@ -37,4 +41,17 @@ ATank* ATankAIController::GetPlayerTankController() const
 {
 	auto controller = Cast<ATankPlayerController>(GetWorld()->GetFirstPlayerController());
 	return controller->GetControlledTank();
+}
+
+void ATankAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	auto PlayerTank = GetPlayerTankController();
+	if (PlayerTank != nullptr)
+	{
+		GetControlledTank()->AimAt(PlayerTank->GetActorLocation());
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Nothing happened."));
+	}
 }
