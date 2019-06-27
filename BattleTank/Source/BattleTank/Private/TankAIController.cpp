@@ -4,6 +4,7 @@
 #include "TankAIController.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
 #include "TankPlayerController.h"
+#include "Tank.h"
 
 
 

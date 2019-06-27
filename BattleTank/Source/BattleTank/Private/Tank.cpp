@@ -2,13 +2,21 @@
 
 
 #include "Tank.h"
+#include "GameFramework/Pawn.h"
 
 // Sets default values
 ATank::ATank()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
+
+}
+
+void ATank::SetBarrel(UTankBarrel* BarrelToSet)
+{
+	TankAimingComponent->SetBarrel(BarrelToSet);
 }
 
 // Called when the game starts or when spawned
@@ -18,16 +26,12 @@ void ATank::BeginPlay()
 	
 }
 
-// Called every frame
-void ATank::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void ATank::AimAt(FVector Location)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s aiming at the location: %s"), *GetName(), *Location.ToString());
+	if (TankAimingComponent != nullptr)
+	{
+		TankAimingComponent->AimAt(Location, LaunchSpeed);
+	}
 }
 
 // Called to bind functionality to input
